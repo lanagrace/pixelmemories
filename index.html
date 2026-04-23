@@ -1,48 +1,232 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Memories</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Arial, Helvetica, sans-serif;
+  min-height:100vh;
+  background:linear-gradient(135deg,#dfe3ff,#eef1ff);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.home-card{
+  background:white;
+  width:100%;
+  max-width:420px;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 12px 30px rgba(0,0,0,.12);
+  text-align:center;
+}
+
+.home-card h1{
+  font-size:30px;
+  margin-bottom:10px;
+}
+
+.home-card p{
+  color:#666;
+  margin-bottom:25px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  cursor:pointer;
+  margin-top:12px;
+}
+
+.primary{
+  background:#111;
+  color:white;
+}
+
+.secondary{
+  background:#ececff;
+  color:#111;
+}
+
+/* MODAL */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  justify-content:center;
+  align-items:center;
+  padding:18px;
+  z-index:999;
+}
+
+.modal-content{
+  background:white;
+  width:100%;
+  max-width:420px;
+  padding:28px;
+  border-radius:18px;
+  animation:pop .25s ease;
+}
+
+@keyframes pop{
+  from{opacity:0;transform:scale(.92);}
+  to{opacity:1;transform:scale(1);}
+}
+
+.modal-content h2{
+  text-align:center;
+  margin-bottom:18px;
+}
+
+input{
+  width:100%;
+  padding:14px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  margin-bottom:14px;
+  font-size:16px;
+}
+
+.close-btn{
+  background:#eee !important;
+  color:#111;
+}
+
+#status{
+  margin-top:14px;
+  text-align:center;
+  color:#444;
+  font-size:14px;
+  min-height:20px;
+}
+
+/* MOBILE */
+@media (max-width:480px){
+  .home-card,
+  .modal-content{
+    padding:22px;
+    border-radius:16px;
+  }
+
+  .home-card h1{
+    font-size:24px;
+  }
+}
+</style>
 </head>
+
 <body>
 
-  <h2>Login</h2>
+<div class="home-card">
+  <h1>Pixel Memories</h1>
+  <p>Store memories that slowly fade over time.</p>
 
-  <input id="email" placeholder="Email" />
-  <input id="password" type="password" placeholder="Password" />
+  <button class="primary" id="openRegister">Register</button>
+  <button class="secondary" id="openLogin">Login</button>
+</div>
 
-  <button onclick="login()">Login</button>
-  <button onclick="signup()">Sign Up</button>
+<!-- REGISTER MODAL -->
+<div class="modal" id="registerModal">
+  <div class="modal-content">
+    <h2>Create Account</h2>
 
-    <!-- Firebase scripts and custom scripts -->
+    <input type="email" id="registerEmail" placeholder="Email">
+    <input type="password" id="registerPassword" placeholder="Password">
+
+    <button class="primary" onclick="signup()">Register</button>
+    <button class="close-btn" onclick="closeModal('registerModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+    <h2>Welcome Back</h2>
+
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
+
+    <button class="primary" onclick="login()">Login</button>
+    <button class="close-btn" onclick="closeModal('loginModal')">Cancel</button>
+
+    <p id="status"></p>
+  </div>
+</div>
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-  <script src="js/firebase.js"></script>
 
-  <script>
-    function login() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+<!-- your config -->
+<script src="js/firebase.js"></script>
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => {
-          window.location.href = "display.html";
-        })
-        .catch(err => alert(err.message));
-    }
+<script>
+const registerModal = document.getElementById("registerModal");
+const loginModal = document.getElementById("loginModal");
 
-    function signup() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+document.getElementById("openRegister").onclick = () => {
+  registerModal.style.display = "flex";
+};
 
-      firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          window.location.href = "display.html";
-        })
-        .catch(err => alert(err.message));
-    }
-  </script>
+document.getElementById("openLogin").onclick = () => {
+  loginModal.style.display = "flex";
+};
+
+function closeModal(id){
+  document.getElementById(id).style.display = "none";
+}
+
+window.onclick = function(e){
+  if(e.target === registerModal) closeModal("registerModal");
+  if(e.target === loginModal) closeModal("loginModal");
+};
+
+// REGISTER
+function signup(){
+  const email = document.getElementById("registerEmail").value;
+  const password = document.getElementById("registerPassword").value;
+
+  firebase.auth()
+    .createUserWithEmailAndPassword(email,password)
+    .then(()=>{
+      window.location.href = "display.html";
+    })
+    .catch(error=>{
+      alert(error.message);
+    });
+}
+
+// LOGIN
+function login(){
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+  const status = document.getElementById("status");
+
+  firebase.auth()
+    .signInWithEmailAndPassword(email,password)
+    .then(()=>{
+      window.location.href = "display.html";
+    })
+    .catch(error=>{
+      status.innerText = error.message;
+    });
+}
+</script>
 
 </body>
 </html>
