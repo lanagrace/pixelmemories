@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/displayStyle.css">
+
+  
+  <title>Photo Timeline</title>
+</head>
+<body>
+
+ <button id="openUpload" class="fab">+</button>
+
+ <div id="data" class="photo-grid">
+  <div id="uploadModal" class="modal">
+    <div class="modal-content">
+        <h2>Upload Photo</h2>
+
+        <input type="file" id="imageFile" accept="image/*">
+        <button onclick="uploadPhoto()">Upload</button>
+
+        <p id="status"></p>
+    </div>
+  </div>
+</div>
+
+   <!-- Container for photo data -->
+  <div id="data"></div>
+
+  <script>
+ function uploadPhoto() {
+  const file = document.getElementById("imageFile").files[0];
+
+  const user = firebase.auth().currentUser;
+
+  if (!user) {
+    alert("Not logged in");
+    return;
+  }
+
+  if (!file) {
+    alert("Please select a file");
+    return;
+  }
+
+  const storageRef = firebase.storage().ref(
+    "photos/" + user.uid + "/" + Date.now() + "_" + file.name
+  );
+
+  storageRef.put(file)
+    .then(snapshot => snapshot.ref.getDownloadURL())
+    .then(url => {
+
+      return db.collection("users")
+        .doc(user.uid)
+        .collection("log")
+        .add({
+          image: url,
+          date: firebase.firestore.FieldValue.serverTimestamp(),
+          lastClicked: Date.now()
+        });
+
+    })
+    .then(() => {
+      console.log("Upload successful");
+
+      // close modal
+      const modal = document.getElementById("uploadModal");
+      if (modal) modal.style.display = "none";
+
+      // only reset if elements exist
+      const fileInput = document.getElementById("imageFile");
+      const captionInput = document.getElementById("caption");
+
+      if (fileInput) fileInput.value = "";
+      if (captionInput) captionInput.value = "";
+
+      // reload AFTER UI updates
+      setTimeout(() => {
+        location.reload();
+      }, 100);
+    })
+    .catch(err => {
+      console.error("Upload failed:", err);
+    });
+}
+const modal = document.getElementById("uploadModal");
+const openBtn = document.getElementById("openUpload");
+
+openBtn.addEventListener("click", () => {
+  modal.style.display = "flex";
+});
+
+// close when clicking outside
+window.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    modal.style.display = "none";
+  }
+});
+
+  </script>
+
+  <!-- Firebase scripts -->
+      <!-- Firebase scripts and custom scripts -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+  <!-- Your custom scripts -->
+  <script src="js/firebase.js"></script>
+  <script src="js/displayData.js"></script>
+
+</body>
+</html>

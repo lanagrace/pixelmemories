@@ -1,0 +1,88 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: rgb(174, 174, 197);
+}
+
+body {
+  height: 100%;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+ 
+}
+
+.container2 {
+  background:white;
+  padding:30px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  width:400px;
+}
+
+input, textarea, button {
+  width:100%;
+  margin-top:15px;
+  padding:12px;
+  font-size:16px;
+}
+
+button {
+  background:#333;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+
+button:hover {
+  background:#555;
+}
+
+video {
+  margin-top: 10px;
+  max-width: 100%;
+  display: block;
+}
+
+#mood{
+  margin-top: 50px;
+}
+
+input, button {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#coords {
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+
+
+
+
+/* Styles for larger screens */
+@media screen and (min-width: 768px) {
+  .photo-card {
+    max-width: 300px;
+  }
+}
+
+/* Styles for smaller screens (like mobile) */
+@media screen and (max-width: 767px) {
+  .photo-card {
+    max-width: 100%;
+  }
+}
