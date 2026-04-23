@@ -87,7 +87,7 @@ button {
     border: 1px solid #ccc;
     padding: 10px;
     max-width: 200px;
-    font-size: 10px;
+    font-size: 12pt;
     vertical-align: top;
     cursor: pointer;
     transition: transform 0.2s;
@@ -128,4 +128,21 @@ button {
     width: 320px;
     max-width: 90%;
     border-radius: 10px;
+}
+
+/* MOBILE */
+@media (max-width:480px){
+  
+.photo-card {
+    display: inline-block;
+    margin: 0 15px 20px 0;
+    border: 1px solid #ccc;
+    padding: 10px;
+    max-width: 70px;
+    font-size: 10px;
+    vertical-align: top;
+    cursor: pointer;
+    transition: transform 0.2s;
+    background-color: rgb(216, 221, 247);
+}
 }
