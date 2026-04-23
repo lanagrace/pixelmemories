@@ -109,16 +109,14 @@ document.addEventListener("DOMContentLoaded", () => {
               .collection("log")
               .doc(doc.id)
               .update({
-                lastClicked: Date.now(),
+                lastClicked: Date.now()
+              })
+              .then(() => {
+                location.reload();
+              })
+              .catch((err) => {
+                console.error(err);
               });
-
-            const pixelAmount = calculatePixelation(
-              data.lastClicked || data.lastViewed || data.date
-            );
-
-            if (pixelAmount >= 2) {
-              openStoryModal(doc.id, uid);
-            }
           });
 
           // =========================
@@ -204,6 +202,5 @@ function pixelateImage(img, pixelSize) {
 }
 
 });
-
 
 
